@@ -1,0 +1,26 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Matheus Marques",
+            "email": "theu1421@gmail.com",
+            "isRecruter": false,
+            "isCompany": false,
+            "years": "24",
+            "password": "123",
+            "JobDescription": "Desenvolvedor Front End",
+            "Experiences": "teste",
+            "image": "assets/imgs/foto.jpeg"
+        },
+        {
+            "id": 2,
+            "name": "TradeUp",
+            "email": "teste@gmail.com",
+            "password": "123",
+            "isRecruter": true,
+            "isCompany": true,
+            "JobDescription": "Desenvolvedor Front End Junior",
+            "image": "assets/imgs/TradeUP_Logo.png"
+        }
+    ]
+}
