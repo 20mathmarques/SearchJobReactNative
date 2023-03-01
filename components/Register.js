@@ -1,14 +1,12 @@
 import {
-  AppBar,
   HStack,
   TextInput,
   VStack,
   Button,
   Switch,
-  ListItem,
 } from "@react-native-material/core";
-import { useState } from "react";
-import { SafeAreaView, StyleSheet, Text, Image } from "react-native";
+import { useEffect, useState } from "react";
+import { SafeAreaView, StyleSheet, Text, Image, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
@@ -23,18 +21,47 @@ const Register = () => {
   const [experience, setExperience] = useState("");
   const [isRecruter, setIsRecruter] = useState(false);
   const [isCompany, setIsCompany] = useState(false);
+
   const [image, setImage] = useState(null);
+  const [hasGalleryPermission, sethasGalleryPermission] = useState(null);
 
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    (async () => {
+      const galleryStatus =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      sethasGalleryPermission(galleryStatus.status === "granted");
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  if (hasGalleryPermission === false) {
+    return <Text>Sem permição para fotos</Text>;
+  }
+
   const handleRegister = () => {
     setIsLoading(true);
     axios({
       method: "Post",
-      url: "  http://localhost:3001/users",
+      url: "http://localhost:3001/users", 
       data: {
         name,
         email,
@@ -52,7 +79,7 @@ const Register = () => {
       })
       .catch((e) => {
         console.warn(e);
-        setError("");
+        setError(error);
       });
   };
 
@@ -60,125 +87,131 @@ const Register = () => {
     navigation.navigate("Login");
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      // aspect: [4, 3],
-      quality: 1,
-    });
-    console.log(result);
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
   return (
-    <SafeAreaView>
-      <VStack spacing={6} style={{ padding: 16 }}>
-        <VStack spacing={1}>
-          <Text style={styles.title}> Crie sua conta </Text>
-        </VStack>
-        <VStack spacing={6}>
-        <VStack style={{padding:16}}>
+    <SafeAreaView style={styles.container}>
+      <VStack spacing={1}>
+        <Text style={styles.title}> Crie sua conta </Text>
+      </VStack>
+      <VStack style={styles.divBtnImage}>
+        {!image ? (
+          <Button
+            style={styles.btnImage}
+            tittle="adc photo"
+            onPress={() => pickImage()}
+            trailing={() => (
+              <Icon
+                name="account-circle-outline"
+                size={39}
+                style={{ marginLeft: -20 }}
+                color="#0e76a8"
+              />
+            )}
+          />
+        ) : (
+          <></>
+        )}
 
-          {Image ? (
-            <Button
-              style={styles.btnImage}
-              tittle="adc photo"
-              onPress={pickImage} 
-              trailing={(props) => (
-                <Icon
-                  name="account-circle-outline"
-                  size={24}
-                  color="#7B88E8"
-                  {...props}
-                />
-              )}
-            />
-          ) : (
-            <Image source={{uri:image}} style={{ width: 40, height: 40 }} />
-          )}
-          </VStack>
+        {Image && (
+          <Image source={{ uri: image }} style={styles.imagePerfil} />
+        )}
+      </VStack>
+      <VStack spacing={6} style={styles.content}>
+        <VStack spacing={6}>
           <TextInput
+            style={styles.textInput}
             label="Nome"
-            variant="outlined"
-            color="#7B88E8"
+            variant="standard"
+            color="#0e76a8"
             inputContainerStyle={{ outline: "none" }}
             value={name}
             onChangeText={setName}
           />
           <TextInput
+            style={styles.textInput}
             label="Idade"
-            variant="outlined"
+            variant="standard"
+            color="#0e76a8"
             value={year}
             onChangeText={setYear}
           />
           <TextInput
             label="E-mail"
-            variant="outlined"
+            inputStyle={styles.textInput}
+            variant="standard"
+            color="#0e76a8"
             value={email}
             onChangeText={setEmail}
           />
           <TextInput
+            style={styles.textInput}
             label="Senha"
-            variant="outlined"
+            variant="standard"
+            color="#0e76a8"
+       
             value={password}
             onChangeText={setPassword}
           />
-          <HStack justify="between">
-            <ListItem
-              title="É recrutador?"
-              trailing={
-                <Switch
-                  value={isRecruter}
-                  onValueChange={() => setIsRecruter(!isRecruter)}
-                  trackColor="#7B88E8"
-                />
-              }
-              onPress={() => setIsRecruter(!isRecruter)}
-            />
+          <HStack
+            justify="between"
+            style={{ padding: 10, alignItems: "center" }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              É recrutador?
+            </Text>
 
-            <ListItem
-              title="É empresa?"
-              trailing={
-                <Switch
-                  value={isCompany}
-                  onValueChange={() => setIsCompany(!isCompany)}
-                  trackColor="#7B88E8"
-                />
-              }
-              onPress={() => setIsCompany(!isCompany)}
+            <Switch
+              value={isRecruter}
+              onValueChange={() => setIsRecruter(!isRecruter)}
+              trackColor="#0e76a8"
+            />
+            <Text style={{ fontSize: 15, alignItems: "center" }}>
+              É empresa?
+            </Text>
+            <Switch
+              value={isCompany}
+              onValueChange={() => setIsCompany(!isCompany)}
+              trackColor="#0e76a8"
             />
           </HStack>
         </VStack>
         <TextInput
+          style={styles.textInput}
           label="Descrição de Trabalho"
-          variant="outlined"
+          variant="standard"
           value={jobDesc}
+          color="#0e76a8"
           onChangeText={setJobDesc}
         />
 
         <TextInput
           label="Experiências"
           style={styles.TextArea}
-          multiline={true}
-          variant="outlined"
+          numberOfLines={4}
+          maxLength={40}
+          editable
+          variant="standard"
           value={experience}
+          color="#0e76a8"
           onChangeText={setExperience}
         />
 
-        <HStack justify="between">
+        <HStack justify="between" style={{ marginTop: 15 }}>
           <Button
             title="Login"
             variant="text"
             compact
-            color="#7B88E8"
+            color="#0e76a8"
             onPress={goToLogin}
           />
           <Button
             title="Registrar-se"
-            color="#7B88E8"
+            color="#0e76a8"
             tintColor="#fff"
             onPress={handleRegister}
           />
@@ -194,19 +227,56 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
+    flex: 1,
+    backgroundColor: "#0e76a8",
   },
 
   title: {
     fontSize: 19,
-    color: "#7B88E8",
+    color: "#ffff",
     alignItems: "center",
     justifyContent: "center",
     display: "flex",
-    fontWeight: "bold",
+    fontWeight: "thin",
+    margin: 20,
   },
+
   btnImage: {
-    borderRadius: 50,
-    height: 40,
-    width: 40,
+    borderTopStartRadius: 100,
+    borderBottomEndRadius: 100,
+    borderTopEndRadius: 100,
+    borderBottomStartRadius: 100,
+    
+    backgroundColor: "#f1f1f1",
+    height: 70,
+    width: 70,
+    alignItems: "flex-end",
+    paddingTop: 13,
+    alignContent: "center",
+    textAlign: "center",
+  },
+
+  imagePerfil:{
+    height: 100,
+    width: 100,
+    borderTopStartRadius: 100,
+    borderBottomEndRadius: 100,
+    borderTopEndRadius: 100,
+    borderBottomStartRadius: 100,
+  },
+
+  divBtnImage: {
+    padding: 10,
+    alignItems: "center",
+  },
+  content: {
+    backgroundColor: "#ffff",
+    borderTopLeftRadius: 20,
+    borderTopEndRadius: 20,
+    borderBottomEndRadius: 20,
+    borderBottomLeftRadius: 20,
+    width: "100%",
+    padding: 15,
+    flex: 1,
   },
 });
