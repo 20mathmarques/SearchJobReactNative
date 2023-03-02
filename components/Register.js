@@ -61,7 +61,7 @@ const Register = () => {
     setIsLoading(true);
     axios({
       method: "Post",
-      url: "http://localhost:3001/users", 
+      url: "http://localhost:3001/users",
       data: {
         name,
         email,
@@ -73,18 +73,27 @@ const Register = () => {
         isCompany,
         image,
       },
+    }).then((res) => {
+        console.log(res.data, "update profile res");
+        alert(res.message)
+        navigation.navigate("Login");
+
+      }).catch((e) => {
+        console.warn(e, "update profile error");
+        alert(e.message);
+      
+    }).finally(() =>{
+      setIsLoading(false)
     })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((e) => {
-        console.warn(e);
-        setError(error);
-      });
+
   };
 
   const goToLogin = () => {
     navigation.navigate("Login");
+  };
+
+  const goToFirstPage = () => {
+    navigation.navigate("FirstPage");
   };
 
   return (
@@ -103,7 +112,7 @@ const Register = () => {
                 name="account-circle-outline"
                 size={39}
                 style={{ marginLeft: -20 }}
-                color="#0e76a8"
+                color="#202542"
               />
             )}
           />
@@ -111,9 +120,7 @@ const Register = () => {
           <></>
         )}
 
-        {Image && (
-          <Image source={{ uri: image }} style={styles.imagePerfil} />
-        )}
+        {Image && <Image source={{ uri: image }} style={styles.imagePerfil} />}
       </VStack>
       <VStack spacing={6} style={styles.content}>
         <VStack spacing={6}>
@@ -121,7 +128,7 @@ const Register = () => {
             style={styles.textInput}
             label="Nome"
             variant="standard"
-            color="#0e76a8"
+            color="#202542"
             inputContainerStyle={{ outline: "none" }}
             value={name}
             onChangeText={setName}
@@ -130,7 +137,7 @@ const Register = () => {
             style={styles.textInput}
             label="Idade"
             variant="standard"
-            color="#0e76a8"
+            color="#202542"
             value={year}
             onChangeText={setYear}
           />
@@ -138,7 +145,7 @@ const Register = () => {
             label="E-mail"
             inputStyle={styles.textInput}
             variant="standard"
-            color="#0e76a8"
+            color="#202542"
             value={email}
             onChangeText={setEmail}
           />
@@ -146,8 +153,7 @@ const Register = () => {
             style={styles.textInput}
             label="Senha"
             variant="standard"
-            color="#0e76a8"
-       
+            color="#202542"
             value={password}
             onChangeText={setPassword}
           />
@@ -168,7 +174,7 @@ const Register = () => {
             <Switch
               value={isRecruter}
               onValueChange={() => setIsRecruter(!isRecruter)}
-              trackColor="#0e76a8"
+              trackColor="#202542"
             />
             <Text style={{ fontSize: 15, alignItems: "center" }}>
               É empresa?
@@ -176,7 +182,7 @@ const Register = () => {
             <Switch
               value={isCompany}
               onValueChange={() => setIsCompany(!isCompany)}
-              trackColor="#0e76a8"
+              trackColor="#202542"
             />
           </HStack>
         </VStack>
@@ -185,7 +191,7 @@ const Register = () => {
           label="Descrição de Trabalho"
           variant="standard"
           value={jobDesc}
-          color="#0e76a8"
+          color="#202542"
           onChangeText={setJobDesc}
         />
 
@@ -197,7 +203,7 @@ const Register = () => {
           editable
           variant="standard"
           value={experience}
-          color="#0e76a8"
+          color="#202542"
           onChangeText={setExperience}
         />
 
@@ -206,16 +212,24 @@ const Register = () => {
             title="Login"
             variant="text"
             compact
-            color="#0e76a8"
+            color="#202542"
             onPress={goToLogin}
           />
           <Button
             title="Registrar-se"
-            color="#0e76a8"
+            color="#202542"
             tintColor="#fff"
             onPress={handleRegister}
+            loading={isLoading}
           />
         </HStack>
+        <Button
+          variant="outlined"
+          title="Voltar"
+          onPress={() => goToFirstPage()}
+          color="#202542"
+          style={{ marginTop: 20 }}
+        />
       </VStack>
     </SafeAreaView>
   );
@@ -228,7 +242,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    backgroundColor: "#0e76a8",
+    backgroundColor: "#1F7AF2",
   },
 
   title: {
@@ -246,7 +260,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 100,
     borderTopEndRadius: 100,
     borderBottomStartRadius: 100,
-    
+
     backgroundColor: "#f1f1f1",
     height: 70,
     width: 70,
@@ -256,7 +270,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  imagePerfil:{
+  imagePerfil: {
     height: 100,
     width: 100,
     borderTopStartRadius: 100,

@@ -1,125 +1,115 @@
-import {
-    HStack,
-    TextInput,
-    VStack,
-    Button,
-    Switch,
-    Avatar,
-  } from "@react-native-material/core";
-  import { useEffect, useState } from "react";
-  import { SafeAreaView, StyleSheet, Text, Image, View } from "react-native";
-  import { useNavigation } from "@react-navigation/native";
-  import axios from "axios";
-  import * as ImagePicker from "expo-image-picker";
-  import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-  
-  const Register = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [year, setYear] = useState("");
-    const [password, setPassword] = useState("");
-    const [jobDesc, setJobDesc] = useState("");
-    const [experience, setExperience] = useState("");
-    const [isRecruter, setIsRecruter] = useState(false);
-    const [isCompany, setIsCompany] = useState(false);
-  
-    const [image, setImage] = useState(null);
-    const [hasGalleryPermission, sethasGalleryPermission] = useState(null);
-  
-    const navigation = useNavigation();
-  
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
-  
-    useEffect(() => {
-      (async () => {
-        const galleryStatus =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        sethasGalleryPermission(galleryStatus.status === "granted");
-      })();
-    }, []);
-  
-    const pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-  
-      console.log(result);
-  
-      if (!result.cancelled) {
-        setImage(result.uri);
-      }
-    };
-  
-    if (hasGalleryPermission === false) {
-      return <Text>Sem permição para fotos</Text>;
-    }
-  
-   
-    const goToLogin = () => {
-      navigation.navigate("Login");
-    };
-  
-    const goToRegister = () => {
-      navigation.navigate("Register");
-    };
-    return (
-      <SafeAreaView style={styles.container}>
-  
-        <VStack >
-          <Avatar image={{ uri:".../assets/opportunity.png"}} size={45}/>
-          <Text style={styles.title}>
-            Ache seu Emprego da melhor forma.
-            Rápido e Fácil
-          </Text>
-        </VStack>
-        
-  
-          <VStack justify="between" style={{ marginTop: 15 }}>
-            <Button
-              title="Login"
-              variant="text"
-              compact
-              style={styles.btnLogin}
-              onPress={goToLogin}
-            />
-            <Button
-              title="Registrar-se"
-              style={styles.btnRegister}
-              onPress={goToRegister}
-            />
-        </VStack>
-      </SafeAreaView>
-    );
+import { VStack, Avatar, Button } from "@react-native-material/core";
+import { SafeAreaView, StyleSheet, Text, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+import Logo from "../assets/opportunity.png";
+
+const FirstPage = () => {
+  const navigation = useNavigation();
+
+  const goToLogin = () => {
+    navigation.navigate("Login");
   };
-  
-  export default Register;
-  
-  const styles = StyleSheet.create({
-    container: {
-      alignItems: "center",
-      justifyContent: "center",
-      flex: 1,
-      backgroundColor: "#2744DB",
-    },
-  
-    title: {
-      fontSize: 14,
-      color: "#ffff",
-      alignItems: "center",
-      justifyContent: "center",
-      display: "flex",
-      fontWeight: "thin",
-      margin: 20,
-    },
-  
-  
-    divBtnImage: {
-      padding: 10,
-      alignItems: "center",
-    }
-  });
-  
+
+  const goToRegister = () => {
+    navigation.navigate("Register");
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <VStack
+        style={{
+          justifyContent: "center",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Avatar
+          style={styles.logo}
+          color="#202542"
+          size={150}
+          image={{
+            uri: "https://cdn-icons-png.flaticon.com/512/2986/2986624.png",
+          }}
+        />
+        <Text style={styles.title}>Jobs</Text>
+        <Text style={styles.Subtitle}>Ache seu Emprego da melhor forma. </Text>
+
+        <Text style={styles.Subtitle}> Rápido e Fácil</Text>
+      </VStack>
+
+      <VStack justify="between" style={{ marginTop: 15 }}>
+        <Button
+          title="Login"
+          variant="text"
+          compact
+          style={styles.btnLogin}
+          onPress={goToLogin}
+          color="#ffff"
+        />
+        <Button
+          title="Registrar-se"
+          variant="text"
+          style={styles.btnRegister}
+          onPress={goToRegister}
+          color="#202542"
+        />
+      </VStack>
+    </SafeAreaView>
+  );
+};
+
+export default FirstPage;
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    backgroundColor: "#1F7AF2",
+  },
+
+  title: {
+    fontSize: 35,
+    fontWeight: 700,
+    padding: 10,
+    tintColor: "#202542",
+  },
+
+  Subtitle: {
+    fontSize: 14,
+    color: "#ffff",
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
+    alignContent: "center",
+    textAlign: "center",
+    fontWeight: 500,
+    margin: 15,
+  },
+
+  btnLogin: {
+    borderRadius: 50 + "!important",
+    backgroundColor: "#202542",
+    marginBottom: 20,
+    height: 50,
+    width: 250,
+    justifyContent: "center",
+  },
+
+  btnRegister: {
+    height: 50,
+    width: 250,
+    justifyContent: "center",
+    borderRadius: 10,
+
+    borderBottomRightRadius: 100,
+    marginTop: 20,
+    backgroundColor: "#ffff",
+  },
+  logo: {
+    justifyContent: "center",
+    display: "flex",
+    alignItems: "center",
+  },
+});
